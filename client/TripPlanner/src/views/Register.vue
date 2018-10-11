@@ -30,6 +30,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .register-container {
-  margin-top: 100px;
+  padding-top: 100px;
+  position: absolute;
+  width: 100%;
+  background: #fff;
 }
 </style>

@@ -4,6 +4,8 @@ import Header from '@/components/Header'
 import Home from '@/views/Home'
 import Register from '@/views/Register'
 import Login from '@/views/Login'
+import Dashboard from '@/views/Dashboard'
+import SingleTrip from '@/views/SingleTrip'
 
 Vue.use(Router)
 
@@ -24,6 +26,16 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/dashboard',
+      name: 'Dashboard',
+      component: Dashboard
+    },
+    {
+      path: '/SingleTrip',
+      name: 'SingleTrip',
+      component: SingleTrip
     },
   ]
 })

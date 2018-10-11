@@ -1,8 +1,10 @@
 <template>
   <header class="container">
-    <div class="logo-container">
-      <img src="@/assets/temp-logo.svg"/>
-    </div>
+    <router-link to="/dashboard">
+      <div class="logo-container">
+        <h1>tripland</h1>
+      </div>
+    </router-link>
     <div class="menu-items">
       <router-link to="/login">Login</router-link>
       <router-link to="/register">Register</router-link>
@@ -45,4 +47,13 @@ export default {
   .menu-items a:last-of-type {
     padding-right: 0;
   }
+  .logo-container h1 {
+    font-family: 'Amatic SC', sans-serif;
+    font-weight: 700;
+  }
+
+  header {
+    margin-bottom: 50px;
+  }
+
 </style>

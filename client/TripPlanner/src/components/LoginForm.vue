@@ -1,11 +1,11 @@
 <template>
   <div>
-    <form>
+    <form @submit.prevent="handleSubmit">
       <label for="login-username">Username</label>
-      <input type="text" id="login-username"/>
+      <input type="text" id="login-username" v-model="email" />
       <label for="login-password">Password</label>
-      <input type="password" id="login-password"/>
-      <button class="submit">Submit</button>
+      <input type="password" id="login-password" v-model="password" />
+      <button type="submit">Submit</button>
     </form>
   </div>
 </template>
@@ -15,9 +15,26 @@ export default {
   name: 'LoginForm',
   data () {
     return {
-
+      email: '',
+      password: ''
     }
-  }
+  },
+  methods: {
+    handleSubmit: function(e) {
+
+      e.preventDefault;
+      console.log(this.email, this.password);
+
+      this.axios.post(`http://localhost:8000/users/login`, {
+        email: this.email,
+        password: this.password
+      })
+      .then(response => { console.log(response); })
+      .catch(e => {
+        this.errors.push(e)
+      })
+    }
+  },
 }
 </script>
 
