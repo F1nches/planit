@@ -1,6 +1,6 @@
 <template>
   <footer class="container">
-    <div class="footer-text">Copyright 2018. All Rights Reserved. Crafted by Corey Bush.</div>
+    <div class="footer-text">Copyright 2018 Tripland. All Rights Reserved. Crafted by Finch Development.</div>
   </footer>
 </template>
 

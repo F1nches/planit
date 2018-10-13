@@ -2,8 +2,8 @@
   <div class="register-container">
     <div class="container">
       <div class="row justify-content-sm-center">
-        <div class="col-md-6">
-          <h1>Welcome back. Let's plan a trip together.</h1>
+        <div class="col-md-6 component-container" :style="{ background: 'url(' + backgroundImage + ') no-repeat center center/cover' }">
+          <h1 class="main-heading">Welcome back.</h1>
           <LoginForm/>
         </div>
       </div>
@@ -21,7 +21,7 @@ export default {
   },
   data () {
     return {
-
+      backgroundImage: require('@/assets/topography.svg')
     }
   }
 }

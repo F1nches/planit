@@ -14,14 +14,14 @@
    </div>
 
     <div class="location-card add-card">
+      <router-link to="/addnewtrip">
        <div class="location-card-inner">
-
          <div class="add-trip">
            <h1 class="plus-sign">+</h1>
            <h2>Add New Trip</h2>
          </div>
-
        </div>
+     </router-link>
     </div>
 
   </div>

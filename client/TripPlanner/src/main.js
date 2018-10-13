@@ -5,8 +5,15 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VCalendar from 'v-calendar';
+import 'v-calendar/lib/v-calendar.min.css';
 
-Vue.use(VueAxios, axios)
+Vue.use(VueAxios, axios);
+
+// Use v-calendar, v-date-picker & v-popover components
+Vue.use(VCalendar, {
+  firstDayOfWeek: 1,  // Sunday
+});
 
 Vue.config.productionTip = false
 

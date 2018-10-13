@@ -58,4 +58,38 @@ a:hover {
   color: #333;
   text-decoration: none;
 }
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+input {
+  border: 1px dashed #ddd;
+  padding: 5px 10px;
+}
+input:focus {
+  border: 1px dashed #81ecec;
+  transition: 0.3s;
+}
+button {
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  transition: 0.3s;
+  background: #fff;
+  padding: 10px 20px;
+  box-shadow: 4px 4px 10px #eee;
+  transition: 0.2s;
+}
+button:hover {
+  transition: 0.2s;
+  box-shadow: 2px 2px 3px #ddd;
+}
+.main-heading {
+  margin-bottom: 50px;
+}
+.component-container {
+  padding: 20px;
+  /* border: 1px solid #eee; */
+}
 </style>

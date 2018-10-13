@@ -6,6 +6,7 @@ import Register from '@/views/Register'
 import Login from '@/views/Login'
 import Dashboard from '@/views/Dashboard'
 import SingleTrip from '@/views/SingleTrip'
+import AddNewTrip from '@/views/AddNewTrip'
 
 Vue.use(Router)
 
@@ -33,9 +34,14 @@ export default new Router({
       component: Dashboard
     },
     {
-      path: '/SingleTrip',
+      path: '/singletrip',
       name: 'SingleTrip',
       component: SingleTrip
+    },
+    {
+      path: '/addnewtrip',
+      name: 'AddNewTrip',
+      component: AddNewTrip
     },
   ]
 })

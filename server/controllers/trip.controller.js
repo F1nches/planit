@@ -79,3 +79,25 @@ exports.userTrips = function(req, res) {
   }
 
 };
+
+
+//Return all trips for logged in user
+exports.userSpecificTrips = function(req, res) {
+
+  // console.log(req.params.author);
+  const token = req.headers.authorization.split(" ")[1];
+  var decoded = jwt.decode(token, 'cdb5015');
+  console.log(decoded);
+
+  if (decoded.id) {
+    Trip.find({author: decoded.id}, function(err, trips) {
+      if (err) return next(err);
+      res.send(trips);
+    });
+  } else {
+    return res.status(401).json({
+      message: 'Unauthorized request.'
+    });
+  }
+
+};
