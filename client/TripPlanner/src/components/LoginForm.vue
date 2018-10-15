@@ -1,8 +1,8 @@
 <template>
   <div>
-    <form @submit.prevent="handleSubmit">
-      <label for="login-username">Username</label>
-      <input type="text" id="login-username" v-model="email" />
+    <form @submit.prevent="login">
+      <label for="login-email">Email</label>
+      <input type="text" id="login-email" v-model="email" />
       <label for="login-password">Password</label>
       <input type="password" id="login-password" v-model="password" />
       <button type="submit">Submit</button>
@@ -20,18 +20,13 @@ export default {
     }
   },
   methods: {
-    handleSubmit: function(e) {
-
-      e.preventDefault;
-      console.log(this.email, this.password);
-
-      this.axios.post(`http://localhost:8000/users/login`, {
+    login() {
+      this.$store.dispatch('retrieveToken', {
         email: this.email,
         password: this.password
       })
-      .then(response => { console.log(response); })
-      .catch(e => {
-        this.errors.push(e)
+      .then((response) => {
+        this.$router.push('/dashboard');
       })
     }
   },

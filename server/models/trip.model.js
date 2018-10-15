@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 let TripSchema = new Schema({
   destination: {type: String},
-  arrival: {type: String},
-  departure: {type: String},
+  dateRange: {type: String},
+  packingList: {type: String},
   author: {type: String}
 });
 

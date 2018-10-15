@@ -1,4 +1,5 @@
 const Trip = require('../models/trip.model');
+const Quote = require('../models/quote.model');
 const jwt = require('jsonwebtoken');
 
 //Create a trip
@@ -7,12 +8,12 @@ exports.tripCreate = function(req, res) {
   const token = req.headers.authorization.split(" ")[1];
   var decoded = jwt.decode(token, 'cdb5015');
   console.log(decoded);
+  console.log(token);
 
   let trip = new Trip(
     {
       destination: req.body.destination,
-      arrival: req.body.arrival,
-      departure: req.body.departure,
+      dateRange: req.body.dateRange,
       packingList: req.body.packingList,
       author: decoded.id
     }
@@ -60,26 +61,25 @@ exports.tripDelete = function(req, res) {
 };
 
 //Return all trips for logged in user
-exports.userTrips = function(req, res) {
-
-  // console.log(req.params.author);
-  const token = req.headers.authorization.split(" ")[1];
-  var decoded = jwt.decode(token, 'cdb5015');
-  console.log(decoded);
-
-  if (req.params.author == decoded.id) {
-    Trip.find({author: req.params.author}, function(err, trips) {
-      if (err) return next(err);
-      res.send(trips);
-    });
-  } else {
-    return res.status(401).json({
-      message: 'Unauthorized request.'
-    });
-  }
-
-};
-
+// exports.userTrips = function(req, res) {
+//
+//   // console.log(req.params.author);
+//   const token = req.headers.authorization.split(" ")[1];
+//   var decoded = jwt.decode(token, 'cdb5015');
+//   console.log(decoded);
+//
+//   if (req.params.author == decoded.id) {
+//     Trip.find({author: req.params.author}, function(err, trips) {
+//       if (err) return next(err);
+//       res.send(trips);
+//     });
+//   } else {
+//     return res.status(401).json({
+//       message: 'Unauthorized request.'
+//     });
+//   }
+//
+// };
 
 //Return all trips for logged in user
 exports.userSpecificTrips = function(req, res) {
@@ -101,3 +101,16 @@ exports.userSpecificTrips = function(req, res) {
   }
 
 };
+
+//Return a random travel quote
+exports.quote = function(req, res) {
+  Quote.count().exec(function(err, count) {
+    var random = Math.floor(Math.random() * count);
+
+    Quote.findOne().skip(random).exec(
+      function(err, quote) {
+        res.send(quote);
+      }
+    );
+  });
+}

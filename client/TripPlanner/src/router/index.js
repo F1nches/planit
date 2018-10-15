@@ -7,6 +7,7 @@ import Login from '@/views/Login'
 import Dashboard from '@/views/Dashboard'
 import SingleTrip from '@/views/SingleTrip'
 import AddNewTrip from '@/views/AddNewTrip'
+import Logout from '@/views/Logout'
 
 Vue.use(Router)
 
@@ -21,27 +22,50 @@ export default new Router({
     {
       path: '/register',
       name: 'Register',
-      component: Register
+      component: Register,
+      meta: {
+        requiresVisitor: true
+      }
     },
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      meta: {
+        requiresVisitor: true
+      }
+    },
+    {
+      path: '/logout',
+      name: 'Logout',
+      component: Logout,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/dashboard',
       name: 'Dashboard',
-      component: Dashboard
+      component: Dashboard,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/singletrip',
       name: 'SingleTrip',
-      component: SingleTrip
+      component: SingleTrip,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/addnewtrip',
       name: 'AddNewTrip',
-      component: AddNewTrip
+      component: AddNewTrip,
+      meta: {
+        requiresAuth: true
+      }
     },
   ]
 })

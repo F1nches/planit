@@ -14,5 +14,9 @@ router.delete('/:id/delete', tripController.tripDelete);
 // router.get('/:author/all', checkAuth, tripController.userTrips);
 router.get('/all', checkAuth, tripController.userSpecificTrips);
 
+
+//Return random travel quote
+router.get('/quote', tripController.quote);
+
 //Export router
 module.exports = router;

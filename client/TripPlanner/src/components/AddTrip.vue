@@ -1,11 +1,12 @@
 <template>
   <div class="container">
 
-      <form class="add-trip-form">
+      <form class="add-trip-form" @submit.prevent="submitTrip">
+
         <div class="row">
           <div class="form-group col-md-6">
             <label for="trip-destination">Destination</label>
-            <input id="trip-destination" type="text"/>
+            <input id="trip-destination" type="text" v-model="destination"/>
           </div>
           <div class="form-group col-md-6">
             <label for="trip-dates">Dates of Trip</label>
@@ -21,12 +22,14 @@
           <label for="trip-packing-list">Packing list (items separated by comma)</label>
           <input id="trip-packing-list" type="text"/>
         </div>
-      </form>
-      <div class="form-group quote">
-        <p>"Live your life by a compass not a clock." <br> – Stephen Covey</p>
-      </div>
-      <router-link to="/dashboard"><img :src="backIcon"/><h3 class="back-link">Back to Dashboard</h3></router-link>
 
+        <div class="form-group quote">
+          <p>"{{quote}}"<br> – {{quoteAuthor}}</p>
+        </div>
+        <div class="button-wrapper">
+          <button type="submit" class="save-trip"><img :src="backIcon"/><h3 class="back-link">Save Trip</h3></button>
+        </div>
+    </form>
   </div>
 </template>
 
@@ -38,12 +41,14 @@ export default {
       destination: '',
       backgroundImage: '',
       backgroundOverlayColor: '',
-      arrivalDate: '',
-      departureDate: '',
-      packingList: [],
+      packingList: '',
       dateRange: {
         start: new Date(),
         end: new Date()
+      },
+      selectedDates: {
+        start: '',
+        end: ''
       },
       calendarStyles: {
         wrapper: {
@@ -57,12 +62,40 @@ export default {
           color: '#444'
         }
       },
-      backIcon: require('@/assets/back.svg')
+      backIcon: require('@/assets/back.svg'),
+      quoteAuthor: '',
+      quote: ''
     }
   },
+  mounted: function() {
+    this.$store.dispatch('retrieveQuote')
+    .then((response) => {
+      this.quoteAuthor = response.data.author;
+      this.quote = response.data.quote;
+    })
+  },
   methods: {
-
+    submitTrip: function() {
+      const token = this.$store.state.token;
+      this.axios.post('http://localhost:8000/api/create',
+        {
+          destination: this.destination,
+          packingList: this.packingList,
+          dateRange: this.dateRange.start + '-' + this.dateRange.end
+        },
+        {
+          headers: {'Authorization': 'Bearer ' + token}
+        })
+        .then(response => {
+          console.log(response);
+          this.$router.push('/dashboard');
+        })
+        .catch(e => {
+          this.errors.push(e)
+        })
+    }
   }
+
 }
 </script>
 
@@ -89,11 +122,21 @@ form input {
   text-align: center;
   font-style: italic;
 }
-.container a {
+.container .save-trip {
   margin: 0 auto;
   text-align: center;
+  cursor: pointer;
 }
-.container a img {
+.container .save-trip img {
   height: 40px;
+}
+.button-wrapper {
+  width: 100%;
+  text-align: center;
+}
+button {
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 </style>

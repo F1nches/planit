@@ -6,8 +6,10 @@
       </div>
     </router-link>
     <div class="menu-items">
-      <router-link to="/login">Login</router-link>
-      <router-link to="/register">Register</router-link>
+      <router-link v-if="!loggedIn" to="/login">Login</router-link>
+      <router-link v-if="!loggedIn" to="/register">Register</router-link>
+      <router-link v-if="loggedIn" to="/dashboard">Dashboard</router-link>
+      <router-link v-if="loggedIn" to="/logout">Logout</router-link>
     </div>
   </header>
 </template>
@@ -15,9 +17,9 @@
 <script>
 export default {
   name: 'Header',
-  data () {
-    return {
-
+  computed: {
+    loggedIn() {
+      return this.$store.getters.loggedIn;
     }
   }
 }
@@ -55,5 +57,7 @@ export default {
   header {
     margin-bottom: 50px;
   }
-
+  a.router-link-active {
+    font-weight: 600;
+  }
 </style>
