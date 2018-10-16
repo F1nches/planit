@@ -31,7 +31,10 @@ export default {
         email: this.email,
         password: this.password
       })
-      .then(response => { console.log(response); })
+      .then(response => {
+        console.log(response);
+        this.$router.push('/login');
+      })
       .catch(e => {
         this.errors.push(e)
       })

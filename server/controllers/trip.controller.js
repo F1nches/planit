@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 //Create a trip
 exports.tripCreate = function(req, res) {
-
+  console.log(req.file);
   const token = req.headers.authorization.split(" ")[1];
   var decoded = jwt.decode(token, 'cdb5015');
   console.log(decoded);
@@ -15,7 +15,9 @@ exports.tripCreate = function(req, res) {
       destination: req.body.destination,
       dateRange: req.body.dateRange,
       packingList: req.body.packingList,
-      author: decoded.id
+      author: decoded.id,
+      tripImage: req.file.path,
+      tripColor: req.body.tripColor
     }
   );
 

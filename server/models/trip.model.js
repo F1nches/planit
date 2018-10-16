@@ -5,7 +5,9 @@ let TripSchema = new Schema({
   destination: {type: String},
   dateRange: {type: String},
   packingList: {type: String},
-  author: {type: String}
+  author: {type: String},
+  tripImage: {type: String},
+  tripColor: {type: String}
 });
 
 // Export the model

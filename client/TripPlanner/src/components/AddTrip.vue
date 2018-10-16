@@ -20,8 +20,19 @@
         </div>
         <div class="form-group">
           <label for="trip-packing-list">Packing list (items separated by comma)</label>
-          <input id="trip-packing-list" type="text"/>
+          <input id="trip-packing-list" type="text" v-model="packingList"/>
         </div>
+        <div class="form-group">
+          <label for="trip-image">Trip Background Image</label>
+          <input type="file" id="trip-image" @change="onFileSelected"/>
+        </div>
+
+        <div class="color-picker">
+         <label>Select color for this trip</label>
+         <div class="colors-container">
+           <div v-for="color in colorPicker" :style="{background: color}" :data-color="color" @click="selectedColor = color" :class="{active: color === selectedColor}"></div>
+         </div>
+       </div>
 
         <div class="form-group quote">
           <p>"{{quote}}"<br> – {{quoteAuthor}}</p>
@@ -29,6 +40,7 @@
         <div class="button-wrapper">
           <button type="submit" class="save-trip"><img :src="backIcon"/><h3 class="back-link">Save Trip</h3></button>
         </div>
+
     </form>
   </div>
 </template>
@@ -42,6 +54,7 @@ export default {
       backgroundImage: '',
       backgroundOverlayColor: '',
       packingList: '',
+      tripImage: null,
       dateRange: {
         start: new Date(),
         end: new Date()
@@ -64,7 +77,10 @@ export default {
       },
       backIcon: require('@/assets/back.svg'),
       quoteAuthor: '',
-      quote: ''
+      quote: '',
+      colorPicker: ['#8e44ad', '#2980b9', '#16a085', '#27ae60', '#c0392b', '#d35400', '#f39c12'],
+      selectedColor: '',
+      selectedFile: null
     }
   },
   mounted: function() {
@@ -75,16 +91,26 @@ export default {
     })
   },
   methods: {
+    onFileSelected: function(event) {
+      this.selectedFile = event.target.files[0];
+    },
     submitTrip: function() {
       const token = this.$store.state.token;
+
+      var fd = new FormData();
+
+      fd.append('destination', this.destination);
+      fd.append('packingList', this.packingList);
+      fd.append('dateRange', this.dateRange.start + '-' + this.dateRange.end);
+      fd.append('tripColor', this.selectedColor);
+      fd.append('tripImage', this.selectedFile, this.selectedFile.name);
+
+      console.log(fd);
+
       this.axios.post('http://localhost:8000/api/create',
+        fd,
         {
-          destination: this.destination,
-          packingList: this.packingList,
-          dateRange: this.dateRange.start + '-' + this.dateRange.end
-        },
-        {
-          headers: {'Authorization': 'Bearer ' + token}
+          headers: {'Authorization': 'Bearer ' + token, 'Content-Type': 'multipart/form-data'}
         })
         .then(response => {
           console.log(response);
@@ -138,5 +164,21 @@ button {
   background: none;
   border: none;
   box-shadow: none;
+}
+.color-picker {
+ text-align: center;
+}
+.colors-container > div {
+ height: 25px;
+ width: 25px;
+ display: inline-block;
+ margin: 10px;
+ margin-top: 0;
+ transition: 0.2s;
+}
+.colors-container > div:hover, .colors-container > div.active {
+ transform: scale(1.1);
+ transition: 0.2s;
+ cursor: pointer;
 }
 </style>

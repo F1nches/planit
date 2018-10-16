@@ -1,17 +1,17 @@
 <template>
   <div class="container">
-    <div v-for="trip in trips" class="location-card">
+    <div v-for="trip in userTrips" class="location-card">
       <router-link to="/singletrip">
         <div class="location-card-inner">
-         <div class="location-image" :style="{ background: 'url(' + trip.backgroundImage + ') no-repeat center center/cover' }">
+         <div class="location-image" :style="{ background: 'url(' + convertImageUrl(trip.tripImage) + ') no-repeat center center/cover' }">
          </div>
          <div class="location-name">
            <h2>{{trip.destination}}</h2>
          </div>
-         <div class="location-circle" :style="{ background: trip.backgroundColorOverlay }"></div>
+         <div class="location-circle" :style="{ background: trip.tripColor }"></div>
         </div>
-    </router-link>
-   </div>
+      </router-link>
+    </div>
 
     <div class="location-card add-card">
       <router-link to="/addnewtrip">
@@ -32,32 +32,29 @@ export default {
   name: 'TravelList',
   data () {
     return {
-      trips: [
-        {
-          destination: 'Hawaii',
-          backgroundImage: 'https://images.pexels.com/photos/965157/pexels-photo-965157.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-          backgroundColorOverlay: '#2980b9'
-        },
-        {
-          destination: 'Iceland',
-          backgroundImage: 'https://images.pexels.com/photos/951076/pexels-photo-951076.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-          backgroundColorOverlay: '#8e44ad'
-        },
-        {
-          destination: 'Utah',
-          backgroundImage: 'https://images.pexels.com/photos/967097/pexels-photo-967097.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-          backgroundColorOverlay: '#27ae60'
-        },
-        {
-          destination: 'New York City',
-          backgroundImage: 'https://images.pexels.com/photos/756908/pexels-photo-756908.jpeg?auto=compress&cs=tinysrgb&h=350',
-          backgroundColorOverlay: '#c0392b'
-        }
-      ]
+      userTrips: []
     }
   },
-  computed: {
-
+  methods: {
+    convertImageUrl: function(link) {
+      return 'http://localhost:8000/' + link.replace("\\", "/");
+    },
+    showState: function() {
+      console.log(this.$store.state.trips);
+    }
+  },
+  mounted: function() {
+    this.axios.get(`http://localhost:8000/api/all`, {
+      headers: {'Authorization': 'Bearer ' + this.$store.state.token}
+    })
+    .then(response => {
+      console.log(response.data);
+      this.userTrips = response.data;
+    })
+    .catch(e => {
+      console.log(e);
+      reject(error);
+    })
   }
 }
 </script>

@@ -1,12 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const multer = require('multer'); // For accepting non input form data like images
 const trip = require('./routes/trip.route');
 const user = require('./routes/user.route');
 
 const app = express();
-
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -14,10 +13,12 @@ app.use(function(req, res, next) {
   next();
 });
 
-
 // Parse incoming request bodies in middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+
+// Make uploads folder publicly accessible (static) so that routes using uploads/ work
+app.use('/uploads', express.static('uploads'));
 
 app.use('/api', trip);
 app.use('/users', user);

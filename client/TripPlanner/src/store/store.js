@@ -36,7 +36,7 @@ export const store = new Vuex.Store({
     },
     retrieveQuoteMutation(state, quote) {
       state.quote = quote;
-    }
+    },
   },
   actions: {
     retrieveToken(context, credentials) {
