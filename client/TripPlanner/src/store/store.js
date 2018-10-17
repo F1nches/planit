@@ -8,6 +8,7 @@ export const store = new Vuex.Store({
   state: {
     token: localStorage.getItem('user-token') || null,
     trips: [],
+    activeTrip: '',
     quote: {}
   },
   getters: {
@@ -31,12 +32,12 @@ export const store = new Vuex.Store({
     destroyTokenMutation(state, token) {
       state.token = token;
     },
-    retrieveUserTrips(state, trips) {
-      state.trips = trips;
-    },
     retrieveQuoteMutation(state, quote) {
       state.quote = quote;
     },
+    setActiveTripMutation(state, id) {
+      state.activeTrip = id;
+    }
   },
   actions: {
     retrieveToken(context, credentials) {

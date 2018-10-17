@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div v-for="trip in userTrips" class="location-card">
+    <div v-for="trip in userTrips" class="location-card" @click="setActiveTrip(trip._id)">
       <router-link to="/singletrip">
         <div class="location-card-inner">
          <div class="location-image" :style="{ background: 'url(' + convertImageUrl(trip.tripImage) + ') no-repeat center center/cover' }">
@@ -24,6 +24,18 @@
      </router-link>
     </div>
 
+    <div class="loading" v-if="loading">
+      <div class="load-wrap">
+            <div class="load-9">
+                <p>Trips Loading</p>
+                <div class="spinner">
+                    <div class="bubble-1"></div>
+                    <div class="bubble-2"></div>
+                 </div>
+            </div>
+        </div>
+    </div>
+
   </div>
 </template>
 
@@ -32,7 +44,8 @@ export default {
   name: 'TravelList',
   data () {
     return {
-      userTrips: []
+      userTrips: [],
+      loading: true
     }
   },
   methods: {
@@ -41,15 +54,23 @@ export default {
     },
     showState: function() {
       console.log(this.$store.state.trips);
+    },
+    setActiveTrip: function(id) {
+      this.$store.commit('setActiveTripMutation', id);
     }
   },
-  mounted: function() {
+  created: function() {
+
     this.axios.get(`http://localhost:8000/api/all`, {
       headers: {'Authorization': 'Bearer ' + this.$store.state.token}
     })
     .then(response => {
       console.log(response.data);
-      this.userTrips = response.data;
+      this.$store.state.trips = response.data;
+      this.userTrips = this.$store.state.trips;
+
+      this.loading = false;
+
     })
     .catch(e => {
       console.log(e);
@@ -153,4 +174,62 @@ transform: scale(40);
 .plus-sign {
   line-height: 20px;
 }
+
+/** Loader **/
+
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.load-wrap {
+    float: left;
+    width: 100px;
+    height: 100px;
+    margin: 0 10px 10px 0;
+    padding: 20px 20px 20px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.spinner {
+    position: relative;
+    width: 45px;
+    height: 45px;
+    margin: 0 auto;
+}
+
+.bubble-1,
+.bubble-2 {
+    position: absolute;
+    top: 0;
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+    background-color: #444;
+}
+
+.bubble-2 {
+    top: auto;
+    bottom: 0;
+}
+
+.load-9 .spinner {animation: loadingI 2s linear infinite;}
+.load-9 .bubble-1, .load-9 .bubble-2 {animation: bounce 2s ease-in-out infinite;}
+.load-9 .bubble-2 {animation-delay: -1.0s;}
+
+@keyframes loadingI {
+    100% {transform: rotate(360deg);}
+}
+
+@keyframes bounce  {
+  0%, 100% {transform: scale(0.0);}
+  50% {transform: scale(1.0);}
+}
+
+
 </style>

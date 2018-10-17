@@ -54,6 +54,7 @@ export default {
       backgroundImage: '',
       backgroundOverlayColor: '',
       packingList: '',
+      packingListArray: '',
       tripImage: null,
       dateRange: {
         start: new Date(),
@@ -91,16 +92,23 @@ export default {
     })
   },
   methods: {
+    createPackingListArray: function() {
+      this.packingListArray = this.packingList.replace(/, /g, ',').split(',');
+      console.log('packing list array: ' + this.packingListArray);
+    },
     onFileSelected: function(event) {
       this.selectedFile = event.target.files[0];
     },
     submitTrip: function() {
+
+      this.createPackingListArray();
+
       const token = this.$store.state.token;
 
       var fd = new FormData();
 
       fd.append('destination', this.destination);
-      fd.append('packingList', this.packingList);
+      fd.append('packingList', this.packingListArray);
       fd.append('dateRange', this.dateRange.start + '-' + this.dateRange.end);
       fd.append('tripColor', this.selectedColor);
       fd.append('tripImage', this.selectedFile, this.selectedFile.name);

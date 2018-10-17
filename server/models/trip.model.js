@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 let TripSchema = new Schema({
   destination: {type: String},
   dateRange: {type: String},
-  packingList: {type: String},
+  packingList: {type: Array},
   author: {type: String},
   tripImage: {type: String},
   tripColor: {type: String}

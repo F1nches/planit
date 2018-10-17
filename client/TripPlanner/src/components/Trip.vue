@@ -3,10 +3,11 @@
 
     <div class="trip-card">
      <div class="trip-card-inner">
-       <div class="trip-image" :style="{ background: 'linear-gradient(' + backgroundOverlayColor + ',' + backgroundOverlayColor + '), url(' + backgroundImage + ') no-repeat center center/cover' }">
+       <div class="trip-image" :style="{ background: 'url(' + convertImageUrl(backgroundImage) + ') no-repeat center center/cover' }">
+         <div class="overlay-color" :style="{ background: backgroundOverlayColor }"></div>
          <div class="trip-name">
            <h1>{{tripName}}</h1>
-           <h3>{{arrivalDate}} - {{departureDate}}</h3>
+           <h3>{{dateRange}}</h3>
          </div>
        </div>
        <div class="row">
@@ -55,12 +56,12 @@ export default {
   name: 'Trip',
   data () {
     return {
-      tripName: 'Hawaii',
-      backgroundImage: 'https://images.pexels.com/photos/965157/pexels-photo-965157.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-      backgroundOverlayColor: 'rgba(60,60,60,0.5)',
-      arrivalDate: '12/10/2018',
-      departureDate: '12/15/2018',
-      packingList: ['toothbrush', 'sunglasses', 'sunscreen', 'swimtrunks', 'straw hat', 'waterproof bag', 'socks', 'sandals'],
+      singleTrip: {},
+      tripName: '',
+      backgroundImage: '',
+      backgroundOverlayColor: '',
+      dateRange: '',
+      packingList: [],
       itinerary: [
         {
           day: 'day 1',
@@ -78,80 +79,27 @@ export default {
               activity: 'Beach'
             }
           ]
-        },
-        {
-          day: 'day 2',
-          activities: [
-            {
-              time: '10AM',
-              activity: 'Breakfast'
-            },
-            {
-              time: '1PM',
-              activity: 'Lunch'
-            },
-            {
-              time: '3PM',
-              activity: 'Hiking'
-            }
-          ]
-        },
-        {
-          day: 'day 3',
-          activities: [
-            {
-              time: '9AM',
-              activity: 'Breakfast'
-            },
-            {
-              time: '12PM',
-              activity: 'Lunch'
-            },
-            {
-              time: '2PM',
-              activity: 'Beach'
-            }
-          ]
-        },
-        {
-          day: 'day 4',
-          activities: [
-            {
-              time: '9AM',
-              activity: 'Breakfast'
-            },
-            {
-              time: '12PM',
-              activity: 'Lunch'
-            },
-            {
-              time: '2PM',
-              activity: 'Parasailing'
-            }
-          ]
-        },
-        {
-          day: 'day 5',
-          activities: [
-            {
-              time: '9AM',
-              activity: 'Breakfast'
-            },
-            {
-              time: '12PM',
-              activity: 'Beach'
-            },
-            {
-              time: '4PM',
-              activity: 'Fireworks'
-            }
-          ]
         }
       ]
     }
   },
   methods: {
+    convertImageUrl: function(link) {
+      return 'http://localhost:8000/' + link.replace("\\", "/");
+    }
+  },
+  created: function() {
+    var totalTrips = this.$store.state.trips;
+    console.log(this.$store.state.activeTrip);
 
+    this.singleTrip = totalTrips.find(totalTrip => totalTrip._id == this.$store.state.activeTrip);
+  },
+  beforeMount: function() {
+    this.tripName = this.singleTrip.destination;
+    this.backgroundImage = this.singleTrip.tripImage;
+    this.backgroundOverlayColor = this.singleTrip.tripColor;
+    this.packingList = this.singleTrip.packingList;
+    this.dateRange = this.singleTrip.dateRange;
   }
 }
 </script>
@@ -179,8 +127,12 @@ export default {
 
 .trip-image {
   min-height: 100px;
+  position: relative;
 }
-
+.trip-name {
+  position: relative;
+  z-index: 2;
+}
 .trip-name h1, .trip-name h3 {
   color: #fff;
 }
@@ -225,5 +177,15 @@ export default {
 .back-link {
   color: #444;
 }
-
+.overlay-color {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  mix-blend-mode: darken;
+  z-index: 1;
+}
 </style>
