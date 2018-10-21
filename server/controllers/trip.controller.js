@@ -9,12 +9,23 @@ exports.tripCreate = function(req, res) {
   var decoded = jwt.decode(token, 'cdb5015');
   console.log(decoded);
   console.log(token);
+  var packingListObjectArray = [];
+
+  function makeObjectArray(arr1, arr2) {
+    for (var i=0; i<arr1.length; i++) {
+      let packingItem = {item: arr1[i], packed: false};
+      arr2.push(packingItem);
+    }
+    return arr2;
+  }
+
+  makeObjectArray(req.body.packingList, packingListObjectArray);
 
   let trip = new Trip(
     {
       destination: req.body.destination,
       dateRange: req.body.dateRange,
-      packingList: req.body.packingList,
+      packingList: packingListObjectArray,
       author: decoded.id,
       tripImage: req.file.path,
       tripColor: req.body.tripColor
@@ -31,10 +42,12 @@ exports.tripCreate = function(req, res) {
 
 };
 
-//Update a trip
+//Update a trip's packing list
 exports.tripUpdate = function(req, res) {
 
-  Trip.findByIdAndUpdate(req.params.id, {$set: req.body}, function(err, trip) {
+  console.log(req.body);
+  Trip.findByIdAndUpdate(req.params.id, {$set: {'packingList': JSON.parse(req.body.packingList)}}, function(err, trip) {
+    console.log(req.body.packingList);
     if (err) return next(err);
     res.send('Trip updated.');
   });

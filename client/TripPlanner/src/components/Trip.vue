@@ -2,7 +2,7 @@
   <div class="container">
 
     <div class="trip-card">
-     <div class="trip-card-inner">
+     <div class="trip-card-inner" :style="{ background: 'url(' + backgroundPicture + ') repeat center center' }">
        <div class="trip-image" :style="{ background: 'url(' + convertImageUrl(backgroundImage) + ') no-repeat center center/cover' }">
          <div class="overlay-color" :style="{ background: backgroundOverlayColor }"></div>
          <div class="trip-name">
@@ -14,7 +14,8 @@
          <div class="col-md-6 packing-list-container">
            <h2>Packing List</h2>
            <div class="packing-list-items">
-             <div v-for="item in packingList">{{item}} <span class="unpacked-packed">&#9633;</span></div>
+             <div v-for="(item, index) in packingList" @click="togglePacked(item)" class="list-item" :class="{packed: item.packed}">{{item.item}} <span class="item-buttons"><span><img class="button-image check-button" :src="checkButton"></img></span><span @click="removeItem(index)"><img class="button-image remove-button" :src="removeButton"></img></span></span></div>
+             <div class="add-item"><input type="text" placeholder="Add item..." v-model="itemToAdd" @keyup.enter="addPackingItem(itemToAdd)"/><button class="add-item-button" @click="addPackingItem(itemToAdd)"><img class="button-image" :src="addButton"></img></button></div>
            </div>
          </div>
          <div class="col-md-6 itinerary-container">
@@ -56,6 +57,11 @@ export default {
   name: 'Trip',
   data () {
     return {
+      backgroundPicture: require('@/assets/topography.svg'),
+      checkButton: require('@/assets/check-btn.svg'),
+      removeButton: require('@/assets/remove-btn.svg'),
+      addButton: require('@/assets/add-btn.svg'),
+      itemToAdd: '',
       singleTrip: {},
       tripName: '',
       backgroundImage: '',
@@ -86,6 +92,44 @@ export default {
   methods: {
     convertImageUrl: function(link) {
       return 'http://localhost:8000/' + link.replace("\\", "/");
+    },
+    togglePacked: function(item) {
+      item.packed = !item.packed;
+      console.log(item.packed);
+    },
+    removeItem: function(index) {
+      this.$delete(this.packingList, index);
+    },
+    addPackingItem: function(item) {
+      if (item.length > 0) {
+        this.packingList.push({item: item, packed: false});
+        this.updateDatabasePackingItems();
+      }
+      this.itemToAdd = '';
+    },
+    updateDatabasePackingItems: function() {
+
+      const token = this.$store.state.token;
+      const theTripToUpdate = this.$store.state.activeTrip;
+
+      var theList = JSON.stringify(this.packingList);
+
+      this.axios.put('http://localhost:8000/api/' + theTripToUpdate + '/update',
+      {
+        packingList: theList
+      },
+      {
+        headers: {'Authorization': 'Bearer ' + token}
+      })
+      .then(response => {
+        console.log(response);
+        console.log(theTripToUpdate);
+        // this.$router.push('/dashboard');
+      })
+      .catch(e => {
+        this.errors.push(e)
+      })
+
     }
   },
   created: function() {
@@ -139,7 +183,7 @@ export default {
 .days .day {
   display: inline-block;
   padding: 3px 10px;
-  border: 1px solid #444;
+  border: 1px dashed #ddd;
   border-radius: 5px;
   margin: 5px;
   font-size: 10px;
@@ -150,11 +194,8 @@ export default {
   padding: 10px;
 }
 .packing-list-items > div, .itinerary-details > div {
-  border-bottom: 1px solid #444;
+  border-bottom: 1px dashed #ddd;
   padding: 5px;
-}
-.unpacked-packed {
-  float: right;
 }
 .col-md-6 {
   margin-bottom: 25px;
@@ -187,5 +228,37 @@ export default {
   right: 0;
   mix-blend-mode: darken;
   z-index: 1;
+}
+.add-item input {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+button.add-item-button {
+  padding: 0;
+  box-shadow: none;
+  border: none;
+  cursor: pointer;
+}
+.item-buttons, .add-item-button {
+  float: right;
+}
+.item-buttons span .check-button, .item-buttons span .remove-button {
+  opacity: 0.3;
+}
+.remove-button:hover {
+  opacity: 1 !important;
+}
+.list-item.packed .item-buttons span .check-button {
+  opacity: 1;
+}
+.list-item.packed {
+  text-decoration: line-through;
+}
+img.button-image {
+  height: 20px;
+}
+button.add-item-button:hover img {
+  background: #eee;
 }
 </style>

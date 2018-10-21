@@ -33,7 +33,7 @@ const upload = multer({
 
 //API Routes
 router.post('/create', checkAuth, upload.single('tripImage'), tripController.tripCreate);
-router.put('/:id/update', tripController.tripUpdate);
+router.put('/:id/update', checkAuth, tripController.tripUpdate);
 router.get('/:id/view', tripController.tripDetails);
 router.delete('/:id/delete', tripController.tripDelete);
 

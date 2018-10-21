@@ -94,7 +94,6 @@ export default {
   methods: {
     createPackingListArray: function() {
       this.packingListArray = this.packingList.replace(/, /g, ',').split(',');
-      console.log('packing list array: ' + this.packingListArray);
     },
     onFileSelected: function(event) {
       this.selectedFile = event.target.files[0];
@@ -108,8 +107,12 @@ export default {
       var fd = new FormData();
 
       fd.append('destination', this.destination);
-      fd.append('packingList', this.packingListArray);
-      fd.append('dateRange', this.dateRange.start + '-' + this.dateRange.end);
+
+      for (var i=0; i<this.packingListArray.length; i++) {
+        fd.append('packingList[]', this.packingListArray[i]);
+      }
+
+      fd.append('dateRange', this.dateRange.start.toDateString() + '-' + this.dateRange.end.toDateString());
       fd.append('tripColor', this.selectedColor);
       fd.append('tripImage', this.selectedFile, this.selectedFile.name);
 
