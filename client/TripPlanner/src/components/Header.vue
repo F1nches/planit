@@ -17,6 +17,11 @@
 <script>
 export default {
   name: 'Header',
+  data () {
+    return {
+    
+    }
+  },
   computed: {
     loggedIn() {
       return this.$store.getters.loggedIn;
@@ -59,5 +64,8 @@ export default {
   }
   a.router-link-active {
     font-weight: 600;
+  }
+  .button-image {
+    width: 20px;
   }
 </style>

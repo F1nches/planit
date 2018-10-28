@@ -10,6 +10,7 @@ exports.tripCreate = function(req, res) {
   console.log(decoded);
   console.log(token);
   var packingListObjectArray = [];
+  var totalDaysArray = [];
 
   function makeObjectArray(arr1, arr2) {
     for (var i=0; i<arr1.length; i++) {
@@ -19,12 +20,29 @@ exports.tripCreate = function(req, res) {
     return arr2;
   }
 
+  function numberOfDays(dateRange, totalNumber) {
+
+    var dates = dateRange.split('-');
+    var dayNumber = Math.abs((Date.parse(dates[1]) - Date.parse(dates[0])))/(1000*60*60*24) + 1;
+
+    console.log('dayNumber', dayNumber);
+    for (var i=0; i<dayNumber; i++) {
+      let day = {day: 'day ' + i, activities: []};
+      totalNumber.push(day);
+    }
+
+    console.log('total number', totalNumber);
+
+  }
+
   makeObjectArray(req.body.packingList, packingListObjectArray);
+  numberOfDays(req.body.dateRange, totalDaysArray);
 
   let trip = new Trip(
     {
       destination: req.body.destination,
       dateRange: req.body.dateRange,
+      numberOfDays: totalDaysArray,
       packingList: packingListObjectArray,
       author: decoded.id,
       tripImage: req.file.path,
@@ -45,12 +63,19 @@ exports.tripCreate = function(req, res) {
 //Update a trip's packing list
 exports.tripUpdate = function(req, res) {
 
-  console.log(req.body);
-  Trip.findByIdAndUpdate(req.params.id, {$set: {'packingList': JSON.parse(req.body.packingList)}}, function(err, trip) {
-    console.log(req.body.packingList);
-    if (err) return next(err);
-    res.send('Trip updated.');
-  });
+  if (req.body.packingList) {
+    Trip.findByIdAndUpdate(req.params.id, {$set: {'packingList': JSON.parse(req.body.packingList)}}, function(err, trip) {
+      console.log(req.body.packingList);
+      if (err) return next(err);
+      res.send('Trip updated.');
+    });
+  } else if (req.body.itinerary) {
+    Trip.findByIdAndUpdate(req.params.id, {$set: {'numberOfDays': JSON.parse(req.body.itinerary)}}, function(err, trip) {
+      console.log(req.body.itinerary);
+      if (err) return next(err);
+      res.send('Trip updated.');
+    });
+  }
 
 };
 

@@ -80,6 +80,10 @@ button {
   padding: 10px 20px;
   box-shadow: 4px 4px 10px #eee;
   transition: 0.2s;
+  cursor: pointer;
+}
+.button-image {
+  cursor: pointer;
 }
 button:hover {
   transition: 0.2s;

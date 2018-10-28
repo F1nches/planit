@@ -2,13 +2,14 @@
   <div>
     <form @submit.prevent="handleSubmit">
       <label for="register-email">Email</label>
-      <input type="text" id="register-username" v-model="email"/>
-      <label for="register-password">Password</label>
-      <input type="password" id="register-password"/>
+      <input type="text" id="register-username" v-model="email" @click="resetErrors"/>
+      <label for="register-password">Password (minimum 8 characters)</label>
+      <input type="password" id="register-password" v-model="passwordFirst" @click="resetErrors"/>
       <label for="register-password-again">Password (again)</label>
-      <input type="password" id="register-password-again" v-model="password"/>
+      <input type="password" id="register-password-again" v-model="passwordSecond" @click="resetErrors"/>
       <button class="submit">Submit</button>
     </form>
+    <div class="error" v-if="errors">Oops. Something went wrong... {{errors}}</div>
   </div>
 </template>
 
@@ -18,26 +19,32 @@ export default {
   data () {
     return {
       email: '',
-      password: ''
+      passwordSecond: '',
+      passwordFirst: '',
+      errors: ''
     }
   },
   methods: {
+    resetErrors: function() {
+      this.errors = '';
+    },
     handleSubmit: function(e) {
-
       e.preventDefault;
-      console.log(this.email, this.password);
-
-      this.axios.post(`http://localhost:8000/users/signup`, {
-        email: this.email,
-        password: this.password
-      })
-      .then(response => {
-        console.log(response);
-        this.$router.push('/login');
-      })
-      .catch(e => {
-        this.errors.push(e)
-      })
+      if (this.passwordSecond.length >= 8 && this.passwordFirst === this.passwordSecond) {
+        this.axios.post(`http://localhost:8000/users/signup`, {
+          email: this.email,
+          password: this.passwordSecond
+        })
+        .then(response => {
+          console.log(response);
+          this.$router.push('/login');
+        })
+        .catch(e => {
+          this.errors = 'This user may already exist or your email/password were invalid.';
+        })
+      } else {
+        this.errors = 'Passwords do not match or are too short.';
+      }
 
     }
   }

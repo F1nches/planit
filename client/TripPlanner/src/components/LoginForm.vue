@@ -2,11 +2,12 @@
   <div>
     <form @submit.prevent="login">
       <label for="login-email">Email</label>
-      <input type="text" id="login-email" v-model="email" />
+      <input type="text" id="login-email" v-model="email" @click="resetErrors"/>
       <label for="login-password">Password</label>
-      <input type="password" id="login-password" v-model="password" />
+      <input type="password" id="login-password" v-model="password" @click="resetErrors"/>
       <button type="submit">Submit</button>
     </form>
+    <div class="error" v-if="errors">{{errors}}</div>
   </div>
 </template>
 
@@ -16,17 +17,25 @@ export default {
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      errors: ''
     }
   },
   methods: {
+    resetErrors: function() {
+      this.errors = '';
+    },
     login() {
       this.$store.dispatch('retrieveToken', {
         email: this.email,
         password: this.password
       })
       .then((response) => {
+        this.errors = '';
         this.$router.push('/dashboard');
+      })
+      .catch(e => {
+        this.errors = 'Please try again.'
       })
     }
   },
@@ -42,7 +51,7 @@ export default {
   form input {
     margin-bottom: 20px;
   }
-  form .submit {
+  form button {
     margin: 25px auto;
   }
 </style>
